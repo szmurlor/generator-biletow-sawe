@@ -15,23 +15,11 @@ function isEmpty(str) {
 
 function pad(num, size) {
   var s = "000000000" + num;
-  return s.substr(s.length - size);
+  return s.slice(s.length - size);
 }
 
 function MyLink(props) {
   let t = props.ticket;
-  Font.register({
-    family: "Roboto",
-    src:
-      "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf"
-  });
-  Font.register({
-    family: "Roboto-Bold",
-    src:
-      "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf"
-  });
-
-  console.log(t);
 
   let tytul = isEmpty(t.tytul) ? " " : t.tytul;
   let tytulStolik = isEmpty(t.tytulStolik) ? " " : t.tytulStolik;
@@ -65,8 +53,8 @@ function MyLink(props) {
               position: "absolute",
               left: "30px",
               top: "400px",
-              width: "300px",
-              fontSize: "20px"
+              width: "350px",
+              fontSize: "24px"
             }}
             render={() => {
               return `${imie} [${numer} z ${ile}]`;
@@ -77,7 +65,7 @@ function MyLink(props) {
               fontFamily: "Roboto",
               fontWeight: "bold",
               position: "absolute",
-              top: "480px",
+              top: "490px",
               left: "30px"
             }}
             render={() => {
@@ -89,8 +77,9 @@ function MyLink(props) {
               fontFamily: "Roboto-Bold",
               fontWeight: "bold",
               position: "absolute",
-              top: "510px",
-              left: "30px"
+              top: "520px",
+              left: "30px",
+              fontSize: "24px"
             }}
             render={() => {
               return `${stolik}`;
@@ -101,8 +90,9 @@ function MyLink(props) {
               fontFamily: "Roboto",
               color: "red",
               position: "absolute",
-              top: "800px",
-              left: "20px"
+              top: "790px",
+              left: "20px",
+              fontSize: "30px"
             }}
             render={() => {
               return `#${nr} `;
@@ -113,7 +103,7 @@ function MyLink(props) {
     );
   };
   var filename = imie.replace(/[^a-z0-9łóżźćńęą]/gi, "_").toLowerCase();
-  let fname = `${filename}_${numer}.pdf`;
+  let fname = `bilet_${filename}_${numer}.pdf`;
   return (
     <PDFDownloadLink document={<MyDoc />} fileName={fname}>
       {({ blob, url, loading, error }) =>
@@ -123,14 +113,26 @@ function MyLink(props) {
   );
 }
 
+Font.register({
+  family: "Roboto",
+  src:
+    "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf"
+});
+Font.register({
+  family: "Roboto-Bold",
+  src:
+    "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf"
+});
+
 export default function App() {
   let [ile, setIle] = React.useState(1);
-  let [tytul, setTytul] = React.useState("Imię i nazwisko");
+  let [tytul, setTytul] = React.useState("Osoba zgłaszająca");
   let [imie, setImie] = React.useState("");
   let [tytulStolik, setTytulStolik] = React.useState("Stolik");
   let [stolik, setStolik] = React.useState("");
   let [tickets, setTickets] = React.useState([]);
   let [id, setId] = React.useState("");
+  let [generuj, setGeneruj] = React.useState(false);
 
   let gen = () => {
     setTickets(
@@ -148,6 +150,7 @@ export default function App() {
           };
         })
     );
+    setGeneruj(true);
   };
   return (
     <>
@@ -155,7 +158,7 @@ export default function App() {
         <h1>Generator biletów</h1>
         <ul className="table">
           <li>
-            <span>Etykieta imienia i nazwiska:</span>
+            <span>Etykieta osoby zgłaszającej:</span>
 
             <span>
               <input
@@ -163,6 +166,7 @@ export default function App() {
                 value={tytul}
                 onChange={(e) => {
                   setTytul(e.target.value);
+                  setGeneruj(false);
                 }}
               />
             </span>
@@ -176,6 +180,7 @@ export default function App() {
                 value={imie}
                 onChange={(e) => {
                   setImie(e.target.value);
+                  setGeneruj(false);
                 }}
               />
             </span>
@@ -189,6 +194,7 @@ export default function App() {
                 value={tytulStolik}
                 onChange={(e) => {
                   setTytulStolik(e.target.value);
+                  setGeneruj(false);
                 }}
               />
             </span>
@@ -202,6 +208,7 @@ export default function App() {
                 value={stolik}
                 onChange={(e) => {
                   setStolik(e.target.value);
+                  setGeneruj(false);
                 }}
               />
             </span>
@@ -214,6 +221,7 @@ export default function App() {
                 value={ile}
                 onChange={(e) => {
                   setIle(e.target.value);
+                  setGeneruj(false);
                 }}
               />
               <br />
@@ -229,6 +237,7 @@ export default function App() {
                 value={id}
                 onChange={(e) => {
                   setId(e.target.value);
+                  setGeneruj(false);
                 }}
               />
               <br />
@@ -245,13 +254,15 @@ export default function App() {
           Generuj
         </button>
       </div>
-      {tickets.map((t) => {
-        return (
-          <div style={{ marginTop: "0.5em" }}>
-            <MyLink ticket={t} />
-          </div>
-        );
-      })}
+      { generuj ? 
+        tickets.map((t) => {
+          return (
+            <div style={{ marginTop: "0.5em" }}>
+              <MyLink ticket={t} />
+            </div>
+          );
+        })  
+        : ""}
     </>
   );
 }
