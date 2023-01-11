@@ -1,0 +1,20 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+ul.table {
+  display: table;
+}
+
+ul.table li {
+  display: table-row;
+}
+
+ul.table li span:first-child {
+  text-align: right;
+}
+ul.table li span {
+  display: table-cell;
+  padding: 0.3em;
+}
